@@ -196,9 +196,63 @@ public class Level {
 	//#############################################################################################################
 	//Your code goes here! 
 	//Please make sure you read the rubric/directions carefully and implement the solution recursively!
+
+	//Pre-condition: none
+	//Post-condition: displays water blocks with the correct fullness depending on the player's current position (and whether or not it is on top of a solid)
 	private void water(int col, int row, Map map, int fullness) {
+	 
+		//make sure we display the correct water image
+		String image = "";
+		if (fullness == 3){
+			image="Full_water";
+		} else if(fullness == 2){
+			image="Half_water";
+		} else if(fullness == 1){
+			image="Quarter_water";
+		} else{
+			image="Falling_water";	
+		}
+		if(map.getTiles()[col][row].isSolid()){//If the method is called on a tile that is a solid, then exit the method
+			return;
+		}
+
+		//make a new water object that matches the current scenario depending on 'fullness' (parameter)
+		Water w = new Water (col, row, tileSize, tileset.getImage(image), this, fullness); 
+		map.addTile(col, row, w);
 		
+
+                       //check if we can go down
+
+                       //if we can’t go down go left and right.
+		
+
+		if(col+1 < map.getTiles().length && !(map.getTiles()[col+1][row] instanceof Water)) {//If whatever is to the right is in bounds + isn't water
+
+			if(col<map.getTiles().length-1 && (row < map.getTiles()[col].length -1 && map.getTiles()[col][row+1].isSolid())){//If the column to the right and the row below is in bounds + the tile below is a solid platform
+			water(col+1, row, map, fullness-1); //ends up adding a water block with a fullness that decreases while there is still a solid under and to the right of the player
+			}
+
+		}
+		
+
+		if(col-1 >= 0 && !(map.getTiles()[col-1][row] instanceof Water)) {//If whatever is to the right is in bounds + isn't water
+
+			if(col>0 && (row < map.getTiles()[col].length -1 && map.getTiles()[col][row+1].isSolid())){//If the column to the left and the row below is in bounds + the tile below is a solid platform
+			water(col-1, row, map, fullness-1); //ends up adding a water block with a fullness that decreases while there is still a solid under and to the left of the player
+			}
+
+		}
+		
+		if(row < map.getTiles()[col].length -1 && !map.getTiles()[col][row+1].isSolid()){//If the tile below is in bounds and is NOT a solid
+			water(col, row+1, map, 0); //the water can go down, so draw falling water
+		}
+		
+		if(row < map.getTiles()[col].length -1 && map.getTiles()[col][row+1].isSolid()){//If the tile below the water is a solid platform
+			water(col, row+1, map, 3); //Then it should show up as a full block of water
+		}
 	}
+		
+	
 
 
 
