@@ -45,4 +45,19 @@ public class GameObject {
 	public int getHeight() {
 		return height;
 	}
+
+	//----------------------------------------Setters
+
+ public void setX(float xPos){
+	position.x = xPos;
+ }
+
+ public void setY(float yPos){
+	position.y = yPos;
+ }
+
+
+
+
 }
+
