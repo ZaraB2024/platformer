@@ -19,10 +19,10 @@ public class Player extends PhysicsObject{
 	public float jumpPower = 1350;
 
 	private boolean isJumping = false;
+
 	private long time;
-	private int jumpCount = 0;
-	private boolean touchGround = true;
-	private boolean doubleJump = false;
+	private boolean doubleJump = true;
+	private boolean jumpKeyDown = false;
 
 	public Player(float x, float y, Level level) {
 	
@@ -33,13 +33,6 @@ public class Player extends PhysicsObject{
 	}
 
 	@Override
-
-	/*Double-jump Information:
-			- space bar must have been pressed already/player should have jumped already
-			- release and repress the space bar
-			- limit jump count to 2 jumps 
-
-	*/
 
 	public void update(float tslf) {
 		super.update(tslf);
@@ -52,34 +45,33 @@ public class Player extends PhysicsObject{
 		if(PlayerInput.isRightKeyDown()) {
 			movementVector.x = +walkSpeed;
 		}
-		if(PlayerInput.isJumpKeyDown() && !isJumping) {
-
-			System.out.println("first jump");
-			movementVector.y = -jumpPower;
-			isJumping = true;
-			touchGround = false;
-			doubleJump = true; //you can double jump after the space bar is pressed once
-			
-		} else if(isJumping == true && doubleJump){
-			movementVector.y = -jumpPower;
-			doubleJump = false;
-		}
 		
+
+		if(PlayerInput.isJumpKeyDown()) { //If the space bar is down
+
+			if(!isJumping){ //If the player isn't already jumping
+				
+			   System.out.println("first jump");
+				movementVector.y = -jumpPower;
+				isJumping = true; //player is now jumping
+			}
+			else if(isJumping == true && doubleJump && jumpKeyDown == false){ //If the space bar is down, the player is jumping, and can doubleJump, and they have released the space bar before repressing it (jumpKeyDown == false makes sure that you can actually see the second jump)
+			System.out.println("second jump");
+		    movementVector.y = -jumpPower;
+			doubleJump = false; //after the second jump you shouldn't be able to double-jump again
+		    }
+			jumpKeyDown = true; //since the player's pressing the space bar now
+		}	
+		if(!PlayerInput.isJumpKeyDown()) //Accounts for if you let go of the space bar
+		{
+			jumpKeyDown = false;
+		} 
+	
 		isJumping = true;
-		if(collisionMatrix[BOT] != null) isJumping = false;
+		if(collisionMatrix[BOT] != null) {isJumping = false; doubleJump = true;} //If the player hits the ground they aren't jumping anymore, so they should have the ability to double jump
 	}
 
-/*Double-jump Information:
-			- space bar must have been pressed already/player should have jumped already
-			- release and repress the space bar
-			- limit jump count to 2 jumps 
 
-			- If the player is pressing the space bar down and isn't already jumping
-			  - add to the y velocity (make them jump)
-			  - the player has the ability to double jump
-			  - If the player is in mid-air (isJumping is true), they can doubleJump, and the jumpCount is less than 2, add to the y velocity
-
-	*/
 
 
 

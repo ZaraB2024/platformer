@@ -20,7 +20,6 @@ import gamelogic.tiles.SolidTile;
 import gamelogic.tiles.Spikes;
 import gamelogic.tiles.Tile;
 import gamelogic.tiles.Water;
-import gamelogic.tiles.Portal;
 public class Level {
 
 	private LevelData leveldata;
@@ -35,8 +34,6 @@ public class Level {
 
 	private ArrayList<Enemy> enemiesList = new ArrayList<>();
 	private ArrayList<Flower> flowers = new ArrayList<>();
-	private ArrayList<Portal> portals = new ArrayList<>(); 
-	private ArrayList<Portal> portalPairs = new ArrayList<>();
 	public ArrayList<Water> waters = new ArrayList<>();
 	public ArrayList<Gas> gasList = new ArrayList<>();
 
@@ -69,9 +66,7 @@ public class Level {
 		Tile[][] tiles = new Tile[width][height];
 		waters = new ArrayList();
 		gasList = new ArrayList();
-		portals = new ArrayList();
-		portalPairs = new ArrayList();
-		//portals.addAll(portalPairs);
+		
 		for (int x = 0; x < width; x++) {
 			int xPosition = x;
 			for (int y = 0; y < height; y++) {
@@ -137,16 +132,7 @@ public class Level {
 				else if (values[x][y] == 21){
 					tiles[x][y] = new Water(xPosition, yPosition, tileSize, tileset.getImage("Quarter_water"), this, 1);
 				waters.add((Water)tiles[x][y]);}
-				else if (values[x][y] == 22){
-					tiles[x][y] = new Portal(xPosition, yPosition, tileSize, false ,tileset.getImage("Portal_exit"), this);
-					portalPairs.add((Portal)tiles[x][y]);
-					//portalPairs.set(0, (Portal)tiles[x][y]); //first element in each pair is the CLOSED portal
-				}
-				else if (values[x][y] == 23){
-					tiles[x][y] = new Portal(xPosition, yPosition, tileSize, true ,tileset.getImage("Portal_enter"), this);
-					portalPairs.add((Portal)tiles[x][y]);
-					//portalPairs.set(1, (Portal)tiles[x][y]); //second element in each pair is the OPEN portal
-				}
+				
 			}
 			
 
@@ -236,7 +222,6 @@ public class Level {
 			}
 			if(!touchedGas){//If not touching gas
 				countDown = 0; //Set to 0 to indicate that no collision took place
-				//System.out.println("never touched gas");
 			}else{//If touching gas
 				if(countDown == 0){//Set to 0 to indicate that a collision took place
 					countDown = System.currentTimeMillis(); //time when collision took place
@@ -249,34 +234,6 @@ public class Level {
 					}
 				}
 			}
-
-			//---------------------------------------------------PORTAL MODIFICATIONS ----------------------------------------------------------
-            //make an arraylist of portal pairs (enter/exit) within an arraylist of portals
-
-
-			//portals.size increases infinitely??? -- portals.size should be 1 in this case because there's only one pair of portals
-		/* 	portals.addAll(portalPairs);
-			System.out.println("portals.size: " + portals.size());
-			System.out.println("portalPairs.size:" + portalPairs.size());
-
-			 float xClosed = player.getX();
-			 float yClosed = player.getY();
-
-			 for(int i = 0; i < portals.size(); i++){//for all portal pairs in the bigger ArrayList
-				for(int j = 0; j < portalPairs.size(); j++){//for all elements in the portal pairs
-					//first element in the pair is the closed portal (the closed door is read first in restartLevel)
-					xClosed = portalPairs.get(0).getX();
-					yClosed = portalPairs.get(0).getY();
-
-					//System.out.println("condition:" + player.getHitbox().isIntersecting(portalPairs.get(1).getHitbox()));
-					if(player.getHitbox().isIntersecting(portalPairs.get(1).getHitbox())){
-					player.setX(xClosed);
-					player.setY(yClosed);
-					
-					}
-					
-				}
-			 }*/
 
 			// Update the enemies
 			for (int i = 0; i < enemies.length; i++) {
